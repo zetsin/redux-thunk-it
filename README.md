@@ -1,5 +1,5 @@
 # redux-thunk-it
-Beautify your format of stores, actions, reducers in react-redux with redux-thunk
+Beautify the format of stores, actions, reducers in react-redux with redux-thunk
 
 ## Installation
 Install with npm:
@@ -25,7 +25,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { createStore, applyMiddleware, combineReducers } from 'redux'
 import { Provider } from 'react-redux'
-import thunk from 'react-thunk-it'
+import thunk from 'redux-thunk-it'
 
 import App from './App'
 import stores from './stores'
@@ -44,7 +44,7 @@ ReactDOM.render((
 
 2. ./stores/index.js
 ```es6
-import { combineReducers, thunkActions } from 'react-thunk-it'
+import { combineReducers, thunkActions } from 'redux-thunk-it'
 
 import test1 from './test1'
 import test2 from './test2'
