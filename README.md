@@ -12,10 +12,10 @@ npm install react-thunk-it
 import thunk, { combineReducers, thunkActions } from 'react-thunk-it'
 ```
 
-1. **combineReducers**: see [Example](#Example) below
-2. **thunkActions**: see [Example](#Example) below
+1. **combineReducers**: see [Example](#example) below
+2. **thunkActions**: see [Example](#example) below
 3. **thunk**: [Redux Thunk](https://github.com/gaearon/redux-thunk)
-4. **thunk.withExtraArgument**: [Injecting a Custom Argument](https://github.com/gaearon/redux-thunk#injecting-a-custom-argument)
+4. **thunk.withExtraArgument**: [Injecting a Custom Argument](https://github.com/gaearon/redux-thunk#injecting-a-custom-argument) MUST using {} as parameter
 
 ## Example
 
@@ -70,6 +70,8 @@ export default {
   actions: {
     get_something: function (message = '') {
       const { dispatch, getState } = this
+      
+      // const { custom arguments injected by withExtraArgument...  } = this
 
       dispatch({
         type: 'test/save',
