@@ -16,6 +16,27 @@ import thunk, { combineReducers, thunkActions } from 'react-thunk-it'
 2. **thunkActions**: see [Example](#example) below
 3. **thunk**: [Redux Thunk](https://github.com/gaearon/redux-thunk)
 4. **thunk.withExtraArgument**: [Injecting a Custom Argument](https://github.com/gaearon/redux-thunk#injecting-a-custom-argument) MUST using {} as parameter
+5. **dispatch**
+    - type: 
+      1. `${store_name}/${reducer_name}` to dispatch to a specific reducer in a specific store
+      2. `/${reducer_name}` to dispatch to a specific reducer in every store
+    - payload: anything
+```
+// dispatch to a specific reducer
+dispatch({
+  type: 'test/save',
+  payload: {
+    ...
+  }
+})
+
+// dispatch to a action in this store
+dispatch(this.xxx())
+
+// dispatch to a action in other store
+import { Test2 } from './'
+dispatch(Test2.xxx())
+```
 
 ## Example
 
