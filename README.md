@@ -103,3 +103,28 @@ export default {
   }
 }
 ```
+
+4. ./App.js
+```jsx
+import { connect } from 'react-redux'
+import { Test1, Test2 } from './models'
+
+class App extends Component {
+  componentDidMount() {
+    const { dispatch } = this.props
+
+    dispatch(Test1.get_something('xxx'))
+  }
+  render() {
+    const { test1, test2 } = this.props
+
+    cosole.log(test1, test2)
+
+    return (
+      <div />
+    );
+  }
+}
+
+export default connect(state => state)(App)
+```
