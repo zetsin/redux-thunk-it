@@ -7,6 +7,16 @@ Install with npm:
 npm install react-thunk-it
 ```
 
+## API
+```es6
+import thunk, { combineReducers, thunkActions } from 'react-thunk-it'
+```
+
+1. **combineReducers**: see [Example](#Example) below
+2. **thunkActions**: see [Example](#Example) below
+3. **thunk**: [Redux Thunk](https://github.com/gaearon/redux-thunk)
+4. **thunk.withExtraArgument**: [Injecting a Custom Argument](https://github.com/gaearon/redux-thunk#injecting-a-custom-argument)
+
 ## Example
 
 1. ./index.js
@@ -33,7 +43,7 @@ ReactDOM.render((
 ```
 
 2. ./stores/index.js
-```js
+```es6
 import { combineReducers, thunkActions } from 'react-thunk-it'
 
 import test1 from './test1'
@@ -49,7 +59,7 @@ export const Test2 = thunkActions(test2)
 ```
 
 3. ./stores/test1.js *&* ./stores/test2.js
-```js
+```es6
 export default {
   state: {
     data: {},
