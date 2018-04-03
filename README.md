@@ -1,10 +1,10 @@
-# react-thunk-it
-Format your stores, actions, reducers in react-redux
+# redux-thunk-it
+Beautify your format of stores, actions, reducers in react-redux with redux-thunk
 
 ## Installation
 Install with npm:
 ```javascript
-npm install react-thunk-it
+npm install redux-thunk-it
 ```
 
 ## API
