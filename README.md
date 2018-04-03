@@ -130,7 +130,7 @@ class App extends Component {
   render() {
     const { test1, test2 } = this.props
 
-    cosole.log(test1, test2)
+    console.log(test1, test2)
 
     return (
       <div />
