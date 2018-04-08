@@ -52,7 +52,7 @@ import App from './App'
 import stores from './stores'
 
 const store = createStore(
-  combineReducers(models),
+  combineReducers(stores),
   applyMiddleware(thunk),
 )
 
@@ -140,7 +140,7 @@ export default {
 4. ./App.js
 ```jsx
 import { connect } from 'react-redux'
-import { Test1, Test2 } from './models'
+import { Test1, Test2 } from './stores'
 
 class App extends Component {
   componentDidMount() {

@@ -1,6 +1,6 @@
 {
-  "name": "react-thunk-it",
-  "version": "1.0.2",
+  "name": "redux-thunk-it",
+  "version": "1.0.4",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -9,6 +9,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "react-thunk": "^1.0.0"
+    "redux-thunk": "^2.2.0"
   }
 }
