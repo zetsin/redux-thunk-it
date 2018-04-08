@@ -1,4 +1,5 @@
-export function combineReducers(models) {
+exports.__esModule = true
+exports.combineReducers = function (models) {
   const reducers = {}
   Object.keys(models).forEach(name => {
     const model = models[name]
@@ -27,7 +28,7 @@ export function combineReducers(models) {
   return reducers
 }
 
-export function thunkActions(model) {
+exports.thunkActions = function (model) {
   const actions = {}
 
   Object.keys(model.actions || {}).forEach(name => {
@@ -42,4 +43,4 @@ export function thunkActions(model) {
   return actions
 }
 
-export { default } from 'redux-thunk'
+exports.default = require('redux-thunk').default
