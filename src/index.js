@@ -35,7 +35,8 @@ export function thunkActions(model) {
   Object.keys(model.actions || {}).forEach(name => {
     actions[name] = function(...args) {
       return (dispatch, getState, extraArgument={}) => {
-        Object.assign(this, extraArgument, { dispatch, getState })
+        Object.assign(this, extraArgument)
+        Object.assign(this.props={}, getState(), { dispatch })
         return model.actions[name].call(this, ...args)
       }
     }

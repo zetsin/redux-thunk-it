@@ -90,7 +90,7 @@ export default {
 
   actions: {
     get_something: function (message = '') {
-      const { dispatch, getState } = this
+      const { dispatch } = this.props
       
       // const { custom arguments injected by withExtraArgument...  } = this
 

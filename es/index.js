@@ -65,7 +65,8 @@ function thunkActions(model) {
 
         var extraArgument = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
-        Object.assign(_this, extraArgument, { dispatch: dispatch, getState: getState });
+        Object.assign(_this, extraArgument);
+        Object.assign(_this.props = {}, getState(), { dispatch: dispatch });
         return (_model$actions$name = model.actions[name]).call.apply(_model$actions$name, [_this].concat(args));
       };
     };
