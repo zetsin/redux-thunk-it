@@ -7,20 +7,22 @@ export function combineReducers(models) {
     model.state = model.state || {}
     model.reducers = model.reducers || {}
 
-    reducers[name] = function(state = model.state, action) {
-      const [target, type] = action.type.split('/')
-      const reducer = model.reducers[type]
-      if(target === name) {
-        if(reducer) {
-          return reducer(state, action.payload)
+    reducers[name] = function(state = model.state, action={}) {
+      if(action.type) {
+        const [target, type] = action.type.split('/')
+        const reducer = model.reducers[type]
+        if(target === name) {
+          if(reducer) {
+            return reducer(state, action.payload)
+          }
+          else {
+            throw new Error('Reducer Not Found')
+          }
         }
-        else {
-          throw new Error('Reducer Not Found')
-        }
-      }
-      else if(target === '') {
-        if(reducer) {
-          return reducer(state, action.payload)
+        else if(target === '') {
+          if(reducer) {
+            return reducer(state, action.payload)
+          }
         }
       }
       return state
