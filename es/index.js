@@ -24,23 +24,25 @@ function combineReducers(models) {
 
     reducers[name] = function () {
       var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : model.state;
-      var action = arguments[1];
+      var action = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
 
-      var _action$type$split = action.type.split('/'),
-          _action$type$split2 = _slicedToArray(_action$type$split, 2),
-          target = _action$type$split2[0],
-          type = _action$type$split2[1];
+      if (action.type) {
+        var _action$type$split = action.type.split('/'),
+            _action$type$split2 = _slicedToArray(_action$type$split, 2),
+            target = _action$type$split2[0],
+            type = _action$type$split2[1];
 
-      var reducer = model.reducers[type];
-      if (target === name) {
-        if (reducer) {
-          return reducer(state, action.payload);
-        } else {
-          throw new Error('Reducer Not Found');
-        }
-      } else if (target === '') {
-        if (reducer) {
-          return reducer(state, action.payload);
+        var reducer = model.reducers[type];
+        if (target === name) {
+          if (reducer) {
+            return reducer(state, action.payload);
+          } else {
+            throw new Error('Reducer Not Found');
+          }
+        } else if (target === '') {
+          if (reducer) {
+            return reducer(state, action.payload);
+          }
         }
       }
       return state;
