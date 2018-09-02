@@ -37,27 +37,34 @@ export function thunkActions(model) {
         const state = getState()
         Object.assign(this, extraArgument)
         Object.assign(this.props={}, state, { dispatch })
-        return Promise.resolve()
-        .then(() => dispatch({
-          type: model.name,
-          payload: {
-            loading: Object.assign({}, state.loading, {
-              [name]: true
-            })
-          }
-        }))
-        .then(() => model.actions[name].call(this, ...args))
-        .then(result => {
+
+        const result = model.actions[name].call(this, ...args)
+
+        if(result instanceof Promise) {
           dispatch({
             type: model.name,
             payload: {
               loading: Object.assign({}, state.loading, {
-                [name]: false
+                [name]: true
               })
             }
           })
+
+          return result.then(result => {
+            dispatch({
+              type: model.name,
+              payload: {
+                loading: Object.assign({}, state.loading, {
+                  [name]: false
+                })
+              }
+            })
+            return result
+          })
+        }
+        else {
           return result
-        })
+        }
       }
     }
     return actions

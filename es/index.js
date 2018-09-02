@@ -64,31 +64,36 @@ function thunkActions(model) {
       }
 
       return function (dispatch, getState) {
+        var _model$actions$name;
+
         var extraArgument = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
         var state = getState();
         Object.assign(_this, extraArgument);
         Object.assign(_this.props = {}, state, { dispatch: dispatch });
-        return Promise.resolve().then(function () {
-          return dispatch({
+
+        var result = (_model$actions$name = model.actions[name]).call.apply(_model$actions$name, [_this].concat(args));
+
+        if (result instanceof Promise) {
+          dispatch({
             type: model.name,
             payload: {
               loading: Object.assign({}, state.loading, _defineProperty({}, name, true))
             }
           });
-        }).then(function () {
-          var _model$actions$name;
 
-          return (_model$actions$name = model.actions[name]).call.apply(_model$actions$name, [_this].concat(args));
-        }).then(function (result) {
-          dispatch({
-            type: model.name,
-            payload: {
-              loading: Object.assign({}, state.loading, _defineProperty({}, name, false))
-            }
+          return result.then(function (result) {
+            dispatch({
+              type: model.name,
+              payload: {
+                loading: Object.assign({}, state.loading, _defineProperty({}, name, false))
+              }
+            });
+            return result;
           });
+        } else {
           return result;
-        });
+        }
       };
     };
     return actions;
