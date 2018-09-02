@@ -1,50 +1,67 @@
 import thunk from 'redux-thunk'
 
 export function combineReducers(models) {
-  const reducers = {}
-  Object.keys(models).forEach(name => {
+  return Object.keys(models).reduce((reducers, name) => {
     const model = models[name]
+    model.name = name
     model.state = model.state || {}
     model.reducers = model.reducers || {}
 
     reducers[name] = function(state = model.state, action={}) {
-      if(action.type) {
-        const [target, type] = action.type.split('/')
-        const reducer = model.reducers[type]
-        if(target === name) {
-          if(reducer) {
-            return reducer(state, action.payload)
-          }
-          else {
-            throw new Error('Reducer Not Found')
-          }
+      const { type=`${model.name}/`, payload } = action
+      const [ model_name, reducer_type ] = type.split('/')
+      const reducer = model.reducers[reducer_type]
+      if(model_name === name) {
+        if(reducer) {
+          return reducer(state, payload)
         }
-        else if(target === '') {
-          if(reducer) {
-            return reducer(state, action.payload)
-          }
+        else if(payload) {
+          return Object.assign({}, state, payload)
+        }
+      }
+      else if(model_name === '') {
+        if(reducer) {
+          return reducer(state, payload)
         }
       }
       return state
     }
-  })
-  return reducers
+    return reducers
+  }, {})
 }
 
 export function thunkActions(model) {
-  const actions = {}
-
-  Object.keys(model.actions || {}).forEach(name => {
+  return Object.keys(model.actions || {}).reduce((actions, name) => {
     actions[name] = function(...args) {
       return (dispatch, getState, extraArgument={}) => {
+        const state = getState()
         Object.assign(this, extraArgument)
-        Object.assign(this.props={}, getState(), { dispatch })
-        return model.actions[name].call(this, ...args)
+        Object.assign(this.props={}, state, { dispatch })
+        return Promise.resolve()
+        .then(() => dispatch({
+          type: model.name,
+          payload: {
+            loading: Object.assign({}, state.loading, {
+              [name]: true
+            })
+          }
+        }))
+        .then(() => model.actions[name].call(this, ...args))
+        .then(result => {
+          dispatch({
+            type: model.name,
+            payload: {
+              loading: Object.assign({}, state.loading, {
+                [name]: false
+              })
+            }
+          })
+          return result
+        })
       }
     }
-  })
-
-  return actions
+    return actions
+  }, {})
 }
 
 export default thunk

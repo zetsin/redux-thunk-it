@@ -15,46 +15,47 @@ var _reduxThunk2 = _interopRequireDefault(_reduxThunk);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function combineReducers(models) {
-  var reducers = {};
-  Object.keys(models).forEach(function (name) {
+  return Object.keys(models).reduce(function (reducers, name) {
     var model = models[name];
+    model.name = name;
     model.state = model.state || {};
     model.reducers = model.reducers || {};
 
     reducers[name] = function () {
       var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : model.state;
       var action = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+      var _action$type = action.type,
+          type = _action$type === undefined ? model.name + '/' : _action$type,
+          payload = action.payload;
 
-      if (action.type) {
-        var _action$type$split = action.type.split('/'),
-            _action$type$split2 = _slicedToArray(_action$type$split, 2),
-            target = _action$type$split2[0],
-            type = _action$type$split2[1];
+      var _type$split = type.split('/'),
+          _type$split2 = _slicedToArray(_type$split, 2),
+          model_name = _type$split2[0],
+          reducer_type = _type$split2[1];
 
-        var reducer = model.reducers[type];
-        if (target === name) {
-          if (reducer) {
-            return reducer(state, action.payload);
-          } else {
-            throw new Error('Reducer Not Found');
-          }
-        } else if (target === '') {
-          if (reducer) {
-            return reducer(state, action.payload);
-          }
+      var reducer = model.reducers[reducer_type];
+      if (model_name === name) {
+        if (reducer) {
+          return reducer(state, payload);
+        } else if (payload) {
+          return Object.assign({}, state, payload);
+        }
+      } else if (model_name === '') {
+        if (reducer) {
+          return reducer(state, payload);
         }
       }
       return state;
     };
-  });
-  return reducers;
+    return reducers;
+  }, {});
 }
 
 function thunkActions(model) {
-  var actions = {};
-
-  Object.keys(model.actions || {}).forEach(function (name) {
+  return Object.keys(model.actions || {}).reduce(function (actions, name) {
     actions[name] = function () {
       var _this = this;
 
@@ -63,18 +64,35 @@ function thunkActions(model) {
       }
 
       return function (dispatch, getState) {
-        var _model$actions$name;
-
         var extraArgument = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
+        var state = getState();
         Object.assign(_this, extraArgument);
-        Object.assign(_this.props = {}, getState(), { dispatch: dispatch });
-        return (_model$actions$name = model.actions[name]).call.apply(_model$actions$name, [_this].concat(args));
+        Object.assign(_this.props = {}, state, { dispatch: dispatch });
+        return Promise.resolve().then(function () {
+          return dispatch({
+            type: model.name,
+            payload: {
+              loading: Object.assign({}, state.loading, _defineProperty({}, name, true))
+            }
+          });
+        }).then(function () {
+          var _model$actions$name;
+
+          return (_model$actions$name = model.actions[name]).call.apply(_model$actions$name, [_this].concat(args));
+        }).then(function (result) {
+          dispatch({
+            type: model.name,
+            payload: {
+              loading: Object.assign({}, state.loading, _defineProperty({}, name, false))
+            }
+          });
+          return result;
+        });
       };
     };
-  });
-
-  return actions;
+    return actions;
+  }, {});
 }
 
 exports.default = _reduxThunk2.default;
