@@ -6,11 +6,13 @@ export function combineReducers(models) {
     model.name = name
     model.state = model.state || {}
     model.reducers = model.reducers || {}
+    model.state.loading = {}
 
     reducers[name] = function(state = model.state, action={}) {
       const { type=`${model.name}/`, payload } = action
       const [ model_name, reducer_type ] = type.split('/')
       const reducer = model.reducers[reducer_type]
+
       if(model_name === name) {
         if(reducer) {
           return reducer(state, payload)
@@ -39,27 +41,23 @@ export function thunkActions(model) {
         Object.assign(this.props={}, state, { dispatch })
 
         const result = model.actions[name].call(this, ...args)
+        const load = loading => dispatch({
+          type: model.name,
+          payload: {
+            loading: Object.assign({}, state.loading, {
+              [name]: loading
+            })
+          }
+        })
 
         if(result instanceof Promise) {
-          dispatch({
-            type: model.name,
-            payload: {
-              loading: Object.assign({}, state.loading, {
-                [name]: true
-              })
-            }
-          })
-
+          load(true)
           return result.then(result => {
-            dispatch({
-              type: model.name,
-              payload: {
-                loading: Object.assign({}, state.loading, {
-                  [name]: false
-                })
-              }
-            })
+            load(false)
             return result
+          }, error => {
+            load(false)
+            return error
           })
         }
         else {

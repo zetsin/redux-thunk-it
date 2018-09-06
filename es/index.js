@@ -23,6 +23,7 @@ function combineReducers(models) {
     model.name = name;
     model.state = model.state || {};
     model.reducers = model.reducers || {};
+    model.state.loading = {};
 
     reducers[name] = function () {
       var state = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : model.state;
@@ -37,6 +38,7 @@ function combineReducers(models) {
           reducer_type = _type$split2[1];
 
       var reducer = model.reducers[reducer_type];
+
       if (model_name === name) {
         if (reducer) {
           return reducer(state, payload);
@@ -73,23 +75,23 @@ function thunkActions(model) {
         Object.assign(_this.props = {}, state, { dispatch: dispatch });
 
         var result = (_model$actions$name = model.actions[name]).call.apply(_model$actions$name, [_this].concat(args));
-
-        if (result instanceof Promise) {
-          dispatch({
+        var load = function load(loading) {
+          return dispatch({
             type: model.name,
             payload: {
-              loading: Object.assign({}, state.loading, _defineProperty({}, name, true))
+              loading: Object.assign({}, state.loading, _defineProperty({}, name, loading))
             }
           });
+        };
 
+        if (result instanceof Promise) {
+          load(true);
           return result.then(function (result) {
-            dispatch({
-              type: model.name,
-              payload: {
-                loading: Object.assign({}, state.loading, _defineProperty({}, name, false))
-              }
-            });
+            load(false);
             return result;
+          }, function (error) {
+            load(false);
+            return error;
           });
         } else {
           return result;
